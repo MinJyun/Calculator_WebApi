@@ -9,6 +9,12 @@ namespace Calculator_WebApi.Controllers
     [Route("[controller]")]
     public class CalculatorController : ControllerBase
     {
+        private CalculatorMapping map;
+
+        public CalculatorController(CalculatorMapping cal)
+        {
+            this.map = cal;
+        }
         /// <summary>
         /// 計算機建立時，給予一個計算機ID
         /// </summary>
@@ -17,7 +23,7 @@ namespace Calculator_WebApi.Controllers
         public string Create()
         {
             CalculatorState newCalculator = new CalculatorState();
-            return SharedFunction.GetCalculatorID(newCalculator);
+            return SharedFunction.GetCalculatorID(newCalculator, map);
         }
 
         /// <summary>
@@ -31,7 +37,7 @@ namespace Calculator_WebApi.Controllers
         {
             try
             {
-                if (CalculatorMapping.IdToCalculator.TryGetValue(calculatorId, out CalculatorState currentCalculator))
+                if (map.IdToCalculator.TryGetValue(calculatorId, out CalculatorState currentCalculator))
                 {
                     return Ok(currentCalculator.ResponseResult(buttonName));
                 }
@@ -54,7 +60,7 @@ namespace Calculator_WebApi.Controllers
         [HttpGet("{calculatorId}/Leave")]
         public string Leave(string calculatorId)
         {
-            CalculatorMapping.IdToCalculator.TryRemove(calculatorId, out CalculatorState ignore);
+            map.IdToCalculator.TryRemove(calculatorId, out CalculatorState ignore);
             return $"關閉編號:{calculatorId} 計算機";
         }
     }

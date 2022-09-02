@@ -10,13 +10,13 @@
         /// </summary>
         /// <param name="newCalculator"></param>
         /// <returns></returns>
-        internal static string GetCalculatorID(CalculatorState newCalculator)
+        internal static string GetCalculatorID(CalculatorState newCalculator, CalculatorMapping map)
         {
             string randomID = Guid.NewGuid().ToString();
             //如果取到相同ID(雖然很難)，就遞迴取到不重複為止
-            if (!CalculatorMapping.IdToCalculator.TryAdd(randomID, newCalculator))
+            if (!map.IdToCalculator.TryAdd(randomID, newCalculator))
             {
-                return GetCalculatorID(newCalculator);
+                return GetCalculatorID(newCalculator, map);
             }
             return randomID;
         }
